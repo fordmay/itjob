@@ -1,0 +1,192 @@
+{% extends "itJob/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="row mb-3">
+  <div class="profile-picture">
+    <div class="profile-picture__back">
+      <img src="https://picsum.photos/1000/400" alt="" class="wallpaper">
+    </div>
+    <div class="profile-picture__avatar">
+      <div class="avatar">
+        <img src="https://picsum.photos/200/200" alt="Avatar" class="avatar__img">
+      </div>
+    </div>
+    <div class="profile-picture__title">
+      <h3 class="title">
+        {% if worker.first_name and worker.last_name %}
+        {{ worker.first_name }} {{ worker.last_name }}
+        {% else %}FirstName LastName{% endif %}
+      </h3>
+    </div>
+    {% if user.username == worker.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_photo">Edit profile photo</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="modal" id="modal_01">
+    <div class="modal__container animate" style="max-width: 600px">
+      <span class="modal__close" title="Close Modal" id="close_01">&times;</span>
+      <div class="modal__content">
+        <div class="image-upload mb-3">
+          <label for="profile_pic" class="avatar" class="form-label" title="Upload Image">
+            <img src="https://picsum.photos/200/200" alt="Avatar" class="avatar__img" id="example_pic">
+          </label>
+          <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="profile_pic">
+        </div>
+        <div class="mb-3">
+          <label for="firdst_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="firdst_name" placeholder="Enter First Name">
+        </div>
+        <div class="mb-3">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="last_name" placeholder="Enter Last Name">
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-dark btn-lg" type="submit" id="save_01">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="description">
+    <div class="value">{{ worker.description | safe }}</div>
+    {% if user.username == worker.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_description">Edit profile
+        description</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="modal" id="modal_02">
+    <div class="modal__container animate">
+      <span class="modal__close" title="Close Modal" id="close_02">&times;</span>
+      <div class="modal__content">
+        <form class="mb-3" method="post">
+          <textarea id="textarea">{{ worker.description | safe }}</textarea>
+        </form>
+        <div class="d-grid gap-2">
+          <button class="btn btn-dark btn-lg" type="submit" id="save_02">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="skills row justify-content-md-center">
+    <div class="col-lg-6 col-md-8 col-12">
+      {% if worker_skills %}
+      <table class="mb-0 table table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Skill</th>
+            <th scope="col">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for skill in worker_skills %}
+          <tr>
+            <td class="skill">{{ skill.skill_name }}</td>
+            <td class="score">{{ skill.get_score_display }}</td>
+          </tr>
+          {%endfor%}
+      </table>
+      {% endif %}
+    </div>
+    {% if user.username == worker.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_skills">Edit profile skills</button>
+    </div>
+    {% endif %}
+  </div>
+  <div class="modal" id="modal_03">
+    <div class="modal__container animate" style="max-width: 600px">
+      <span class="modal__close" title="Close Modal" id="close_03">&times;</span>
+      <div class="modal__content">
+        <div class="col-12">
+          <table class="table table-dark">
+            <thead>
+              <tr>
+                <th scope="col">Skill</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Del</th>
+              </tr>
+            </thead>
+            <tbody id="table_skills_choses">
+              {% for skill in worker_skills %}
+              <tr>
+                <td class="skill_choses">
+                  <input class="form-control" type="text" value="{{ skill.skill_name }}">
+                </td>
+                <td class="score_choses">
+                  <select class="form-select">
+                    {% for id, score in all_scores %}
+                    <option value="{{id}}" {% if id == skill.score %}selected{% endif %}>{{ score }}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td class="skill_remove">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-dark skill_remove_button" type="submit"><strong>-</strong></button>
+                  </div>
+                </td>
+              </tr>
+              {%endfor%}
+              <tr>
+                <td colspan="3">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-dark btn-sm" type="submit" id="add_skill_button"><strong>+</strong></button>
+                  </div>
+                </td>
+              </tr>
+          </table>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-dark btn-lg" type="submit" id="save_03">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="works-history">
+    <div class="time-line">
+      {% for job in worker_history_jobs reversed %}
+      <div class="container-history">
+        <div class="content">
+          <p>{{ job.start_date }} - {% if job.end_date == None %}Now{% else %}{{ job.end_date }}{% endif %}</p>
+          <h5 class="m-2">{{ job.firm }}</h5>
+          <p>{{ job.description }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if user.username == worker.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark">Edit works history</button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.tiny.cloud/1/s8l1yu3k7cp94vsxpgxsbpjmhuidetnks4p97hc76llk15hm/tinymce/6/tinymce.min.js"
+  referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#textarea',
+    toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+      'alignleft aligncenter alignright alignjustify | ' +
+      'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+  });
+</script>
+<script src="{% static 'itJob/index.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,334 @@
+*::before,
+*::after,
+*,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #212429;
+  box-shadow: inset 0 1px 1px #00000013, 0 0 8px #00000099;
+}
+
+/* ----------------------------------------------------------------------- */
+.profile-picture {
+  position: relative;
+}
+
+.profile-picture__back {
+  height: 240px;
+  width: 100%;
+}
+
+.wallpaper {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.profile-picture__avatar {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+
+  height: 210px;
+  width: 210px;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar {
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar__img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.profile-picture__title {
+  display: flex;
+  justify-content: center;
+  padding: 15px 5px;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+}
+
+.profile-picture__avatar,
+.profile-picture__title {
+  background-color: #212429;
+}
+
+.title {
+  font-weight: bold;
+  color: white;
+}
+
+/* ----------------------------------------------------------------------- */
+.table td,
+th {
+  text-align: center;
+}
+
+.table {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------------------- */
+.checked {
+  color: orange;
+}
+
+/* ----------------------------------------------------------------------- */
+/* The actual timeline (the vertical ruler) */
+.time-line {
+  position: relative;
+  color: white;
+}
+
+/* The actual timeline (the vertical ruler) */
+.time-line::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  background-color: #212429;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -3px;
+}
+
+/* Container around content */
+.container-history {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+}
+
+/* The circles on the timeline */
+.container-history::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  right: -13px;
+  background-color: #212429;
+  border: 4px solid orange;
+  top: 15px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Place the container to the left */
+.left {
+  left: 0;
+}
+
+/* Place the container to the right */
+.right {
+  left: 50%;
+}
+
+/* Add arrows to the left container (pointing right) */
+.left::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 22px;
+  width: 0;
+  z-index: 1;
+  right: 30px;
+  border: medium solid #212429;
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent #212429;
+}
+
+/* Add arrows to the right container (pointing left) */
+.right::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 22px;
+  width: 0;
+  z-index: 1;
+  left: 30px;
+  border: medium solid #212429;
+  border-width: 10px 10px 10px 0;
+  border-color: transparent #212429 transparent transparent;
+}
+
+/* Fix the circle for containers on the right side */
+.right::after {
+  left: -13px;
+}
+
+/* The actual content */
+.content {
+  padding: 20px 30px;
+  background-color: #212429;
+  position: relative;
+  border-radius: 6px;
+}
+
+/* Media queries - Responsive timeline on screens less than 767px wide */
+@media screen and (max-width: 767px) {
+
+  /* Place the timeline to the left */
+  .time-line::after {
+    left: 31px;
+  }
+
+  /* Full-width containers */
+  .container-history {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+
+  /* Make sure that all arrows are pointing leftwards */
+  .container-history::before {
+    left: 60px;
+    border: medium solid #212429;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #212429 transparent transparent;
+  }
+
+  /* Make sure all circles are at the same spot */
+  .left::after,
+  .right::after {
+    left: 18px;
+  }
+
+  /* Make all right containers behave like the left ones */
+  .right {
+    left: 0%;
+  }
+}
+
+/* ----------------------------------------------------------------------- */
+.container-xxl {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  flex-grow: 1;
+}
+
+.footer {
+  background-color: #212429;
+  height: 56px;
+  border-radius: 6px 6px 0 0;
+}
+
+/* ----------------------------------------------------------------------- */
+
+/* The Modal (background) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.800);
+  padding-top: 60px;
+}
+
+/* Modal container */
+.modal__container {
+  position: relative;
+  background-color: white;
+  margin: 5% auto;
+  border: 1px solid #888;
+  border-radius: 6px;
+  width: 80%;
+  padding-top: 50px;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animate-zoom 0.6s;
+  animation: animate-zoom 0.6s
+}
+
+@-webkit-keyframes animate-zoom {
+  from {
+    -webkit-transform: scale(0)
+  }
+
+  to {
+    -webkit-transform: scale(1)
+  }
+}
+
+@keyframes animate-zoom {
+  from {
+    transform: scale(0)
+  }
+
+  to {
+    transform: scale(1)
+  }
+}
+
+.modal__content {
+  padding: 16px;
+}
+
+.image-upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hide file input panel */
+.image-upload>input {
+  display: none;
+}
+
+/* The Close Button (x) */
+.modal__close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #212429;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.modal__close:hover,
+.modal__close:focus {
+  color: #424649;
+  cursor: pointer;
+}
+
+/* Media queries - Responsive timeline on screens less than 500px wide */
+@media screen and (max-width: 500px) {
+  .modal__container {
+    width: 99%;
+  }
+}
