@@ -35,7 +35,7 @@ class Worker_skill(models.Model):
 class Worker_history_job(models.Model):
     author = models.ForeignKey(Worker, on_delete=models.CASCADE)
     firm = models.CharField(max_length=64)
-    description = models.TextField(max_length=300)
+    description = models.TextField(max_length=2000)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 

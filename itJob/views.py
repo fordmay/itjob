@@ -1,15 +1,21 @@
+from ast import IsNot
+import itertools
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from itJob.models import Firm, Worker, Worker_history_job, Worker_skill
 
 
 def index(request):
     return render(request, "itJob/index.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -40,7 +46,7 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
-        is_firm = request.POST.get("checkbox", False)      
+        is_firm = request.POST.get("checkbox", False)
 
         # Ensure password matches confirmation
         password = request.POST["password"]
@@ -53,8 +59,9 @@ def register(request):
         # Attempt to create new user
         try:
             if is_firm:
-                user = Firm.objects.create_user(username, email, password, is_firm=True)
-            else:   
+                user = Firm.objects.create_user(
+                    username, email, password, is_firm=True)
+            else:
                 user = Worker.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
@@ -66,18 +73,19 @@ def register(request):
     else:
         return render(request, "itJob/register.html")
 
-def worker_profile (request, user_name):
+
+def worker_profile(request, user_name):
     if Worker.objects.filter(username=user_name).exists():
         return render(request, "itJob/worker_profile.html", {
             "worker": Worker.objects.get(username=user_name),
             "worker_skills": Worker_skill.objects.filter(worker__username=user_name),
-            "all_scores": Worker_skill.SCORES,
             "worker_history_jobs": Worker_history_job.objects.filter(author__username=user_name)
         })
     else:
         return HttpResponseNotFound(f"<h1>User {user_name} not found</h1>")
 
-def firm_profile (request, user_name):
+
+def firm_profile(request, user_name):
     if Firm.objects.filter(username=user_name).exists():
         return render(request, "itJob/firm_profile.html", {
             "firm_info": Firm.objects.get(username=user_name)
@@ -85,10 +93,38 @@ def firm_profile (request, user_name):
     else:
         return HttpResponseNotFound(f"<h1>User {user_name} not found</h1>")
 
+
+@csrf_exempt
 @login_required
-def save_description (request):
+def save_description(request):
     if request.method == "POST":
-        print(request.user)
-        return HttpResponse(status=204)
+        data = json.loads(request.body)
+        if len(data) < 2000:
+            user = Worker.objects.get(username=request.user)
+            if user.description != data:
+                user.description = data
+                user.save()
+            return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=400)
+
+
+@csrf_exempt
+@login_required
+def save_skills(request):
+    if request.method == "POST":
+        new_skills = json.loads(request.body)
+        user_skills = Worker_skill.objects.filter(worker=request.user)       
+        for new_skill, user_skill in itertools.zip_longest(new_skills, user_skills):
+            if new_skill is not None and user_skill is not None:
+                user_skill.skill_name = new_skill["skill"]
+                user_skill.score = new_skill["score"]
+                user_skill.save()
+            if new_skill is None:
+                user_skill.delete()
+            if user_skill is None:
+                user = Worker.objects.get(username=request.user)
+                Worker_skill(skill_name=new_skill["skill"], score=new_skill["score"], worker=user).save()
+        return HttpResponse(status=200)
     else:
         return HttpResponse(status=400)

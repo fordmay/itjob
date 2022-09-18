@@ -5,18 +5,17 @@
 <div class="row mb-3">
   <div class="profile-picture">
     <div class="profile-picture__back">
-      <img src="https://picsum.photos/1000/400" alt="" class="wallpaper">
+      <!-- <img src="https://picsum.photos/1000/400" alt="" class="wallpaper"> -->
     </div>
     <div class="profile-picture__avatar">
       <div class="avatar">
-        <img src="https://picsum.photos/200/200" alt="Avatar" class="avatar__img">
+        <img src="{% static 'itJob/no_user_img.png' %}" alt="Avatar" class="avatar__img" id="avatar__pic">
       </div>
     </div>
     <div class="profile-picture__title">
       <h3 class="title">
-        {% if worker.first_name and worker.last_name %}
-        {{ worker.first_name }} {{ worker.last_name }}
-        {% else %}FirstName LastName{% endif %}
+        <div id="first_name">{{ worker.first_name }}</div>
+        <div id="last_name">{{ worker.last_name }}</div>
       </h3>
     </div>
     {% if user.username == worker.username %}
@@ -32,17 +31,17 @@
       <div class="modal__content">
         <div class="image-upload mb-3">
           <label for="profile_pic" class="avatar" class="form-label" title="Upload Image">
-            <img src="https://picsum.photos/200/200" alt="Avatar" class="avatar__img" id="example_pic">
+            <img src="" alt="Avatar" class="avatar__img" id="example_pic">
           </label>
           <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="profile_pic">
         </div>
         <div class="mb-3">
           <label for="firdst_name" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="firdst_name" placeholder="Enter First Name">
+          <input type="text" class="form-control" id="example_first_name" placeholder="Enter First Name">
         </div>
         <div class="mb-3">
           <label for="last_name" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="last_name" placeholder="Enter Last Name">
+          <input type="text" class="form-control" id="example_last_name" placeholder="Enter Last Name">
         </div>
         <div class="d-grid gap-2">
           <button class="btn btn-dark btn-lg" type="submit" id="save_01">Save</button>
@@ -54,7 +53,7 @@
 
 <div class="row mb-3">
   <div class="description">
-    <div class="value">{{ worker.description | safe }}</div>
+    <div id="description_value">{{ worker.description | safe }}</div>
     {% if user.username == worker.username %}
     <div class="text-end">
       <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_description">Edit profile
@@ -68,9 +67,10 @@
       <span class="modal__close" title="Close Modal" id="close_02">&times;</span>
       <div class="modal__content">
         <form class="mb-3" method="post">
-          <textarea id="textarea">{{ worker.description | safe }}</textarea>
+          <textarea id="textarea"></textarea>
         </form>
         <div class="d-grid gap-2">
+          <div class="info_message" id="info_message_02"></div>
           <button class="btn btn-dark btn-lg" type="submit" id="save_02">Save</button>
         </div>
       </div>
@@ -80,8 +80,7 @@
 
 <div class="mb-3">
   <div class="skills row justify-content-md-center">
-    <div class="col-lg-6 col-md-8 col-12">
-      {% if worker_skills %}
+    <div class="col-lg-6 col-md-8 col-12" {% if worker_skills %}style="display: block;"{% else %}style="display: none;"{% endif %}>
       <table class="mb-0 table table-dark table-hover">
         <thead>
           <tr>
@@ -89,15 +88,15 @@
             <th scope="col">Rating</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="table_skills">
           {% for skill in worker_skills %}
           <tr>
             <td class="skill">{{ skill.skill_name }}</td>
             <td class="score">{{ skill.get_score_display }}</td>
           </tr>
           {%endfor%}
-      </table>
-      {% endif %}
+        </tbody>
+      </table> 
     </div>
     {% if user.username == worker.username %}
     <div class="text-end">
@@ -118,33 +117,7 @@
                 <th scope="col">Del</th>
               </tr>
             </thead>
-            <tbody id="table_skills_choses">
-              {% for skill in worker_skills %}
-              <tr>
-                <td class="skill_choses">
-                  <input class="form-control" type="text" value="{{ skill.skill_name }}">
-                </td>
-                <td class="score_choses">
-                  <select class="form-select">
-                    {% for id, score in all_scores %}
-                    <option value="{{id}}" {% if id == skill.score %}selected{% endif %}>{{ score }}</option>
-                    {% endfor %}
-                  </select>
-                </td>
-                <td class="skill_remove">
-                  <div class="d-grid gap-2">
-                    <button class="btn btn-dark skill_remove_button" type="submit"><strong>-</strong></button>
-                  </div>
-                </td>
-              </tr>
-              {%endfor%}
-              <tr>
-                <td colspan="3">
-                  <div class="d-grid gap-2">
-                    <button class="btn btn-dark btn-sm" type="submit" id="add_skill_button"><strong>+</strong></button>
-                  </div>
-                </td>
-              </tr>
+            <tbody id="example_table_skills"></tbody>
           </table>
         </div>
         <div class="d-grid gap-2">
