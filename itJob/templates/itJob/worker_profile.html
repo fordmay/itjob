@@ -10,7 +10,7 @@
     <div class="profile-picture__avatar">
       <div class="avatar">
         <img src="{% if worker.image %}{{ worker.image.url }}{% else %}{% static 'itJob/no_user_img.png' %}{% endif %}"
-          alt="Avatar" class="avatar__img" id="avatar__pic">
+          alt="Avatar" class="avatar__img" id="avatar_pic">
       </div>
     </div>
     <div class="profile-picture__title">
@@ -31,10 +31,10 @@
       <span class="modal__close" title="Close Modal" id="close_01">&times;</span>
       <div class="modal__content">
         <div class="image-upload mb-3">
-          <label for="profile_pic" class="avatar" class="form-label" title="Upload Image">
-            <img src="" alt="Avatar" class="avatar__img" id="example_pic">
+          <label for="input_pic" class="avatar" class="form-label" title="Upload Image">
+            <img src="" alt="Avatar" class="avatar__img" id="example_avatar_pic">
           </label>
-          <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="profile_pic">
+          <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="input_pic">
         </div>
         <div class="mb-3">
           <label for="firdst_name" class="form-label">First Name</label>
