@@ -1,5 +1,96 @@
 {% extends "itJob/layout.html" %}
+{% load static %}
 
 {% block body %}
+<div class="row mb-3">
+  <div class="profile-picture">
+    <div class="profile-picture__back">
+      <!-- <img src="https://picsum.photos/1000/400" alt="" class="wallpaper"> -->
+    </div>
+    <div class="profile-picture__avatar">
+      <div class="avatar">
+        <img src="{% if firm.image %}{{ firm.image.url }}{% else %}{% static 'itJob/no_user_img.png' %}{% endif %}"
+          alt="Avatar" class="avatar__img" id="avatar__pic">
+      </div>
+    </div>
+    <div class="profile-picture__title">
+      <h3 class="title">
+        <div id="first_name">{{ firm.first_name }}</div>
+        <div id="last_name">{{ firm.last_name }}</div>
+      </h3>
+    </div>
+    {% if user.username == firm.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_photo">Edit profile photo</button>
+    </div>
+    {% endif %}
+  </div>
 
+  <div class="modal" id="modal_01">
+    <div class="modal__container animate" style="max-width: 600px">
+      <span class="modal__close" title="Close Modal" id="close_01">&times;</span>
+      <div class="modal__content">
+        <div class="image-upload mb-3">
+          <label for="profile_pic" class="avatar" class="form-label" title="Upload Image">
+            <img src="" alt="Avatar" class="avatar__img" id="example_pic">
+          </label>
+          <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="profile_pic">
+        </div>
+        <div class="mb-3">
+          <label for="firdst_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="example_first_name" placeholder="Enter First Name">
+        </div>
+        <div class="mb-3">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="example_last_name" placeholder="Enter Last Name">
+        </div>
+        <div class="d-grid gap-2">
+          <div class="info_message" id="info_message_01"></div>
+          <button class="btn btn-dark btn-lg" type="submit" id="save_01">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="description">
+    <div id="description_value">{{ firm.description | safe }}</div>
+    {% if user.username == firm.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_description">Edit profile
+        description</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="modal" id="modal_02">
+    <div class="modal__container animate">
+      <span class="modal__close" title="Close Modal" id="close_02">&times;</span>
+      <div class="modal__content">
+        <form class="mb-3" method="post">
+          <textarea id="textarea"></textarea>
+        </form>
+        <div class="d-grid gap-2">
+          <div class="info_message" id="info_message_02"></div>
+          <button class="btn btn-dark btn-lg" type="submit" id="save_02">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.tiny.cloud/1/s8l1yu3k7cp94vsxpgxsbpjmhuidetnks4p97hc76llk15hm/tinymce/6/tinymce.min.js"
+  referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#textarea',
+    toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+      'alignleft aligncenter alignright alignjustify | ' +
+      'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+  });
+</script>
+<script src="{% static 'itJob/index.js' %}"></script>
 {% endblock %}

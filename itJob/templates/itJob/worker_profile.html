@@ -9,7 +9,8 @@
     </div>
     <div class="profile-picture__avatar">
       <div class="avatar">
-        <img src="{% static 'itJob/no_user_img.png' %}" alt="Avatar" class="avatar__img" id="avatar__pic">
+        <img src="{% if worker.image %}{{ worker.image.url }}{% else %}{% static 'itJob/no_user_img.png' %}{% endif %}"
+          alt="Avatar" class="avatar__img" id="avatar__pic">
       </div>
     </div>
     <div class="profile-picture__title">
@@ -44,6 +45,7 @@
           <input type="text" class="form-control" id="example_last_name" placeholder="Enter Last Name">
         </div>
         <div class="d-grid gap-2">
+          <div class="info_message" id="info_message_01"></div>
           <button class="btn btn-dark btn-lg" type="submit" id="save_01">Save</button>
         </div>
       </div>
@@ -80,7 +82,8 @@
 
 <div class="mb-3">
   <div class="skills row justify-content-md-center">
-    <div class="col-lg-6 col-md-8 col-12" {% if worker_skills %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+    <div class="col-lg-6 col-md-8 col-12" {% if worker_skills %}style="display: block;" {% else %}style="display: none;"
+      {% endif %}>
       <table class="mb-0 table table-dark table-hover">
         <thead>
           <tr>
@@ -96,7 +99,7 @@
           </tr>
           {%endfor%}
         </tbody>
-      </table> 
+      </table>
     </div>
     {% if user.username == worker.username %}
     <div class="text-end">

@@ -1,5 +1,7 @@
 from django.urls import path
 from itJob import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -11,4 +13,5 @@ urlpatterns = [
     # API
     path("profile/save_description", views.save_description, name="save_description"),
     path("profile/save_skills", views.save_skills, name="save_skills"),
-]
+    path("profile/save_photo", views.save_photo, name="save_photo"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

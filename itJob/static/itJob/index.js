@@ -15,29 +15,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function edit_profile_photo() {
   // Show modal and add data there
-  modal_01.style.display = "block";
-  example_pic.src = avatar__pic.src;
-  example_first_name.value = first_name.innerText;
-  example_last_name.value = last_name.innerText;
-  close_01.onclick = () => {
-    // Hide modal
-    modal_01.style.display = "none";
+  document.querySelector("#modal_01").style.display = "block";
+  document.querySelector("#example_pic").src = avatar__pic.src;
+  document.querySelector("#example_first_name").value = document.querySelector("#first_name").innerText;
+  document.querySelector("#example_last_name").value = document.querySelector("#last_name").innerText;
+  document.querySelector("#close_01").onclick = () => {
+    // Hide modal and message
+    document.querySelector("#modal_01").style.display = "none";
+    document.querySelector("#info_message_01").style.display = "none";
     // Clear an HTML image input
-    profile_pic.value = "";
+    document.querySelector("#profile_pic").value = "";
+
   }
   // Preview an image before it is uploaded
   document.querySelector("#profile_pic").onchange = () => {
-    const [file] = profile_pic.files;
+    const [file] = document.querySelector("#profile_pic").files;
     if (file) {
-      example_pic.src = URL.createObjectURL(file);
+      document.querySelector("#example_pic").src = URL.createObjectURL(file);
     }
   }
   document.querySelector("#save_01").onclick = () => {
-    // if true
-    modal_01.style.display = "none";
-    first_name.innerText = example_first_name.value;
-    last_name.innerText = example_last_name.value;
-    avatar__pic.src = example_pic.src;
+    const form_data = new FormData();
+    const fileField = document.querySelector("#profile_pic");
+    if (fileField.files.length > 0 ? fileField.files[0].size > 1024000 : false) {
+      document.querySelector("#info_message_01").style.display = "block";
+      document.querySelector("#info_message_01").innerHTML = "image have to be lover 1MB";
+    } else {
+      form_data.append("first_name", document.querySelector("#example_first_name").value);
+      form_data.append("last_name", document.querySelector("#example_last_name").value);
+      form_data.append("avatar", fileField.files[0]);
+
+      fetch("/profile/save_photo", {
+        method: "POST",
+        body: form_data
+      }).then(result => {
+        if (result.ok) {
+          document.querySelector("#modal_01").style.display = "none";
+          document.querySelector("#info_message_01").style.display = "none";
+          document.querySelector("#profile_pic").value = "";
+          document.querySelector("#first_name").innerText = document.querySelector("#example_first_name").value;
+          document.querySelector("#last_name").innerText = document.querySelector("#example_last_name").value;
+          document.querySelector("#avatar__pic").src = document.querySelector("#example_pic").src;
+        }
+      }).catch(error => {
+        console.log("Error:", error);
+      });
+    }
   }
 }
 
@@ -139,13 +162,13 @@ function edit_profile_skills() {
         }
         score();
         // Hide table if user don't have skills
-        if(data.length === 0){
+        if (data.length === 0) {
           main_table.parentElement.parentElement.style.display = "none";
         }
       }
     }).catch(error => {
       console.log("Error:", error);
-    });  
+    });
   }
 }
 

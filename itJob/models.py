@@ -5,7 +5,7 @@ from django.db import models
 
 class User(AbstractUser):
     is_firm = models.BooleanField(default=False)
-    image = models.URLField(blank=True)
+    image = models.ImageField(blank=True, null=True)
     description = models.TextField(max_length=2000, blank=True)
     
 class Worker(User):
