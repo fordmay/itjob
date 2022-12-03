@@ -1,5 +1,81 @@
 {% extends "itJob/layout.html" %}
 
 {% block body %}
-<h1>Hello</h1>
+{% if firm_works %}
+<div class="row m-3">
+  <h3 class="text-center">Vacancies</h3>
+</div>
+{% endif %}
+
+<div class="row mb-3">
+  <div class="firm-works">
+    {% for firm_work in firm_works %}
+    <div class="card text-center mb-2">
+      <div class="card-header text-bg-dark">
+        {{ firm_work.author.firm_name }}
+      </div>
+      <div class="card-body text-bg-light">
+        <h5 class="card-title">{{ firm_work.work_title }} - {{ firm_work.salary }}$</h5>
+        <p class="card-text mb-2">{{ firm_work.description | safe }}</p>
+
+        <div class="skills row justify-content-md-center">
+          <div class="col-lg-6 col-md-8 col-12">
+            <table class="mb-0 table table-dark table-hover main-table">
+              <thead>
+                <tr>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for skill in firm_work_skills %}
+                {% if skill.work == firm_work %}
+                <tr>
+                  <td class="skill">{{ skill.skill_name }}</td>
+                  <td class="score">{{ skill.get_score_display }}</td>
+                </tr>
+                {% endif %}
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {% if user.username == firm_work.author.username %}
+        <div class="m-2">
+          <a href="#" class="btn btn-outline-dark">Edit work</a>
+        </div>
+        {% endif %}
+        <p class="card-text"><small class="text-muted">{{ firm_work.time }}</small></p>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="pagination justify-content-center">
+      {% if firm_works.has_previous %}
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page=1">&laquo; first</a>
+      </div>
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.previous_page_number }}">previous</a>
+      </div>
+      {% endif %}
+
+      <div class="page-item disabled">
+        <a class="page-link link-secondary">
+          Page {{ firm_works.number }} of {{ firm_works.paginator.num_pages }}.
+        </a>
+      </div>
+
+      {% if firm_works.has_next %}
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.next_page_number }}">next</a>
+      </div>
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.paginator.num_pages }}">last &raquo;</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

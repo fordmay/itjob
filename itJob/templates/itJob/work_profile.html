@@ -3,27 +3,15 @@
 
 {% block body %}
 <div class="row mb-3">
-  <div class="profile-picture">
-    <div class="profile-picture__back">
-      <!-- <img src="https://picsum.photos/1000/400" alt="" class="wallpaper"> -->
-    </div>
-    <div class="profile-picture__avatar">
-      <div class="avatar">
-        <img src="{% if worker.image %}{{ worker.image.url }}{% else %}{% static 'itJob/no_user_img.png' %}{% endif %}"
-          alt="Avatar" class="avatar__img" id="avatar_pic">
-      </div>
-    </div>
     <div class="profile-picture__title">
       <h3 class="title">
         <div id="first_name">{{ worker.first_name }}</div>
         <div id="last_name">{{ worker.last_name }}</div>
       </h3>
     </div>
-    {% if user.username == worker.username %}
     <div class="text-end">
       <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_photo">Edit profile photo</button>
     </div>
-    {% endif %}
   </div>
 
   <div class="modal" id="modal_01">
@@ -56,7 +44,7 @@
 <div class="row mb-3">
   <div class="description">
     <div id="description_value">{{ worker.description | safe }}</div>
-    {% if user.username == worker.username %}
+    {% if user.username == firm.username %}
     <div class="text-end">
       <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_description">Edit profile
         description</button>
@@ -100,7 +88,7 @@
         </tbody>
       </table>
     </div>
-    {% if user.username == worker.username %}
+    {% if user.username == firm.username %}
     <div class="text-end">
       <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_skills">Edit profile skills</button>
     </div>
@@ -127,27 +115,6 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- TODO works-history -->
-<div class="row mb-3">
-  <div class="works-history">
-    <div class="time-line">
-      {% for job in worker_history_jobs reversed %}
-      <div class="container-history">
-        <div class="content">
-          <p>{{ job.start_date }} - {% if job.end_date == None %}Now{% else %}{{ job.end_date }}{% endif %}</p>
-          <h5 class="m-2">{{ job.firm }}</h5>
-          <p>{{ job.description }}</p>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% if user.username == worker.username %}
-    <div class="text-end">
-      <button type="button" class="m-1 btn btn-outline-dark">Edit works history</button>
-    </div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}

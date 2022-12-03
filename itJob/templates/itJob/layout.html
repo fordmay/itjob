@@ -46,6 +46,14 @@
                                 <strong>{{ user.username }}</strong>
                             </a>
                         </li>
+
+                        {% if user.is_firm %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'create_work' %}active{% endif %}"
+                                href="{% url 'create_work' user.username %}">Create vacancy</a>
+                        </li>
+                        {% endif %}
+
                         {% endif %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
@@ -79,6 +87,7 @@
 
     {% block script %}
     {% endblock %}
+    <script src="{% static 'itJob/index.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
         crossorigin="anonymous"></script>

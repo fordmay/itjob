@@ -36,12 +36,8 @@
           <input class="form-control" type="file" accept=".jpg, .jpeg, .png" id="input_pic">
         </div>
         <div class="mb-3">
-          <label for="firdst_name" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="example_first_name" placeholder="Enter First Name">
-        </div>
-        <div class="mb-3">
-          <label for="last_name" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="example_last_name" placeholder="Enter Last Name">
+          <label for="example_firm_name" class="form-label">Firm Name</label>
+          <input type="text" class="form-control" id="example_firm_name" placeholder="Enter Firm Name">
         </div>
         <div class="d-grid gap-2">
           <div class="info_message" id="info_message_01"></div>
@@ -78,6 +74,89 @@
     </div>
   </div>
 </div>
+
+{% if firm_works %}
+<hr>
+<div class="row mb-3">
+  <h3 class="text-center">Vacancies</h3>
+</div>
+{% endif %}
+
+<div class="row mb-3">
+  <div class="firm-works">
+    {% if user.username == firm.username %}
+    <div class="text-end">
+      <button type="button" class="m-1 btn btn-outline-dark" id="edit_profile_description">Add works</button>
+    </div>
+    {% endif %}
+    {% for firm_work in firm_works %}
+    <div class="card text-bg-light text-center mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ firm_work.work_title }} - {{ firm_work.salary }}$</h5>
+        <p class="card-text mb-2">{{ firm_work.description | safe }}</p>
+
+        <div class="skills row justify-content-md-center">
+          <div class="col-lg-6 col-md-8 col-12">
+            <table class="mb-0 table table-dark table-hover main-table">
+              <thead>
+                <tr>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for skill in firm_work_skills %}
+                {% if skill.work == firm_work %}
+                <tr>
+                  <td class="skill">{{ skill.skill_name }}</td>
+                  <td class="score">{{ skill.get_score_display }}</td>
+                </tr>
+                {% endif %}
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {% if user.username == firm_work.author.username %}
+        <div class="m-2">
+          <a href="#" class="btn btn-outline-dark">Edit work</a>
+        </div>
+        {% endif %}
+        <p class="card-text"><small class="text-muted">{{ firm_work.time }}</small></p>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- TODO if is_paginated -->
+    {% if firm_works.paginator.num_pages > 1 %}
+    <div class="pagination justify-content-center">
+      {% if firm_works.has_previous %}
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page=1">&laquo; first</a>
+      </div>
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.previous_page_number }}">previous</a>
+      </div>
+      {% endif %}
+
+      <div class="page-item disabled">
+        <a class="page-link link-secondary">
+          Page {{ firm_works.number }} of {{ firm_works.paginator.num_pages }}.
+        </a>
+      </div>
+
+      {% if firm_works.has_next %}
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.next_page_number }}">next</a>
+      </div>
+      <div class="page-item">
+        <a class="page-link link-secondary" href="?page={{ firm_works.paginator.num_pages }}">last &raquo;</a>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -91,5 +170,4 @@
       'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
   });
 </script>
-<script src="{% static 'itJob/index.js' %}"></script>
 {% endblock %}

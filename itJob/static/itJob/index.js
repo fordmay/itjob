@@ -1,24 +1,46 @@
 score();
 side_history();
+hide_empty_table();
 
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelector("#edit_profile_photo").onclick = () => {
-    edit_profile_photo();
+  if (document.querySelector("#edit_profile_photo")) {
+    document.querySelector("#edit_profile_photo").onclick = () => {
+      edit_profile_photo();
+    }
   }
-  document.querySelector("#edit_profile_description").onclick = () => {
-    edit_profile_description();
+  if (document.querySelector("#edit_profile_description")) {
+    document.querySelector("#edit_profile_description").onclick = () => {
+      edit_profile_description();
+    }
   }
-  document.querySelector("#edit_profile_skills").onclick = () => {
-    edit_profile_skills();
+  if (document.querySelector("#edit_profile_skills")) {
+    document.querySelector("#edit_profile_skills").onclick = () => {
+      edit_profile_skills();
+    }
   }
 });
+
+// Check if user is firm
+function is_firm() {
+  const url_array = window.location.pathname.split("/");
+  if (url_array[1] === "firm") {
+    return true
+  }
+  return false
+}
 
 function edit_profile_photo() {
   // Show modal and add data there
   document.querySelector("#modal_01").style.display = "block";
   document.querySelector("#example_avatar_pic").src = document.querySelector("#avatar_pic").src;
-  document.querySelector("#example_first_name").value = document.querySelector("#first_name").innerText;
-  document.querySelector("#example_last_name").value = document.querySelector("#last_name").innerText;
+
+  if (is_firm()) {
+    document.querySelector("#example_firm_name").value = document.querySelector("#firm_name").innerText;
+  } else {
+    document.querySelector("#example_first_name").value = document.querySelector("#first_name").innerText;
+    document.querySelector("#example_last_name").value = document.querySelector("#last_name").innerText;
+  }
+
   document.querySelector("#close_01").onclick = () => {
     // Hide modal and message
     document.querySelector("#modal_01").style.display = "none";
@@ -41,9 +63,13 @@ function edit_profile_photo() {
       document.querySelector("#info_message_01").style.display = "block";
       document.querySelector("#info_message_01").innerHTML = "image have to be lover 1MB";
     } else {
-      form_data.append("first_name", document.querySelector("#example_first_name").value);
-      form_data.append("last_name", document.querySelector("#example_last_name").value);
       form_data.append("avatar", fileField.files[0]);
+      if (is_firm()) {
+        form_data.append("firm_name", document.querySelector("#example_firm_name").value);
+      } else {
+        form_data.append("first_name", document.querySelector("#example_first_name").value);
+        form_data.append("last_name", document.querySelector("#example_last_name").value);
+      }
 
       fetch("/profile/save_photo", {
         method: "POST",
@@ -53,9 +79,13 @@ function edit_profile_photo() {
           document.querySelector("#modal_01").style.display = "none";
           document.querySelector("#info_message_01").style.display = "none";
           document.querySelector("#input_pic").value = "";
-          document.querySelector("#first_name").innerText = document.querySelector("#example_first_name").value;
-          document.querySelector("#last_name").innerText = document.querySelector("#example_last_name").value;
           document.querySelector("#avatar_pic").src = document.querySelector("#example_avatar_pic").src;
+          if (is_firm()) {
+            document.querySelector("#firm_name").innerText = document.querySelector("#example_firm_name").value;
+          } else {
+            document.querySelector("#first_name").innerText = document.querySelector("#example_first_name").value;
+            document.querySelector("#last_name").innerText = document.querySelector("#example_last_name").value;
+          }
         }
       }).catch(error => {
         console.log("Error:", error);
@@ -96,16 +126,17 @@ function edit_profile_description() {
 
 function edit_profile_skills() {
   document.querySelector("#modal_03").style.display = "block";
-  const main_table = document.querySelector("#table_skills");
-  const example_table = document.querySelector("#example_table_skills");
+  const main_table = document.querySelector(".main-table tbody");
+  const example_table = document.querySelector(".example-table tbody");
 
   // Move skills and scores from table_skills to example_table_skills
-  const all_skills = document.querySelectorAll("#table_skills tr .skill");
-  const all_scores = document.querySelectorAll("#table_skills tr .score");
+  const all_skills = document.querySelectorAll(".skill");
+  const all_scores = document.querySelectorAll(".score");
   example_table.innerHTML = ""; //clean example_table_skills
   for (let i = 0; i < all_skills.length; i++) {
     example_table.append(create_example_table_skills_row(
       all_skills[i].innerHTML,
+      // convert stars to number
       all_scores[i].innerHTML.match(/checked/g) === null ? 0 : all_scores[i].innerHTML.match(/checked/g).length
     ));
   }
@@ -124,6 +155,7 @@ function edit_profile_skills() {
     // Action to add_skill_button
     example_table.insertBefore(
       create_example_table_skills_row(),
+      // add new row before button "+"
       example_table.children[example_table.children.length - 1]
     )
   });
@@ -137,8 +169,8 @@ function edit_profile_skills() {
 
   document.querySelector("#save_03").onclick = () => {
     // Create data with Skills and Scores
-    const example_skills = document.querySelectorAll("#example_table_skills .example_skill input");
-    const example_scores = document.querySelectorAll("#example_table_skills .example_score select");
+    const example_skills = document.querySelectorAll(".example_skill input");
+    const example_scores = document.querySelectorAll(".example_score select");
     let data = [];
     for (let i = 0; i < example_skills.length; i++) {
       if (example_skills[i].value !== "") {
@@ -241,6 +273,15 @@ function number_to_stars(number) {
     }
   }
   return stars_score;
+}
+
+function hide_empty_table() {
+  const main_table = document.querySelectorAll(".main-table tbody");
+  for(let i=0; i<main_table.length;i++){
+    if(main_table[i].innerHTML.trim() === ""){
+      main_table[i].parentElement.parentElement.style.display = "none"
+    }
+  }
 }
 
 function side_history() {
